@@ -20,11 +20,15 @@ import os
 import glob
 import multiprocessing as mp
 import pandas as pd
+import argsparse
+
 
 # expected oligo barcode - OT correspondences
 OLIGO_POOL = pd.read_excel("/n/data1/bch/hemonc/bauer/archana/NovaSeq3/usftp21.novogene.com/trimmed_fastq_vpooled/LVOT_oligo_pool.xlsx", engine = "openpyxl")
 OLIGO_POOL = OLIGO_POOL.set_index("Barcode")["OT"].to_dict()
 
+
+out_dir = "umi_in_header/"
 def put_umi_in_header(r1):
     # may need to modify such that "ot" matches OT names in LVOT_OLIGO_POOL.xlsx
     sample = r1.split("_")[1]
@@ -37,8 +41,8 @@ def put_umi_in_header(r1):
 
     # open FASTQ files for each OT to write to
     for ot in OLIGO_POOL.values():
-        ot_r1 = gzip.open("umi_in_header/" + sample + "_" + ot + "_R1.fastq.gz", 'wt')
-        ot_r2 = gzip.open("umi_in_header/" + sample + "_" + ot + "_R2.fastq.gz", 'wt')
+        ot_r1 = gzip.open(out_dir + "/" + sample + "_" + ot + "_R1.fastq.gz", 'wt')
+        ot_r2 = gzip.open(out_dir + "/" + sample + "_" + ot + "_R2.fastq.gz", 'wt')
         files_UMIs[ot] = [ot_r1, ot_r2, {}]
 
     # read in FASTQ files for samples
@@ -154,7 +158,7 @@ def main():
 
     # write read & UMI counts summaries to file
     summary_df = pd.DataFrame(info, columns=["Sample","Total reads", "Reads with oligo barcode", "Corresponding UMIs"])
-    with pd.ExcelWriter("umi_in_header/LVOT_reads_UMIs.xlsx") as writer:
+    with pd.ExcelWriter(out_dir + "/LVOT_reads_UMIs.xlsx") as writer:
         summary_df.to_excel(writer, sheet_name="Per_sample_summary", index=False)
         per_ot_df.to_excel(writer, sheet_name="Per_OT_summary", index=False)
 
