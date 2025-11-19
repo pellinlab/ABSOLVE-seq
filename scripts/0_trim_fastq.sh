@@ -1,7 +1,7 @@
 read1=$1
 TRIMMOMATIC='/Users/jieconglin/Documents/jiecong/ABSOLVE_WTCas9/Trimmomatic-0.36'
 FASTQ_DIR='/Users/jieconglin/Documents/jiecong/ABSOLVE_WTCas9'
-OUT_DIR='/Users/jieconglin/Documents/jiecong/ABSOLVE_WTCas9/wtCas9_trimmed_2'
+OUT_DIR='/Users/jieconglin/Documents/jiecong/ABSOLVE_WTCas9/wtCas9_trimmed'
 java -jar $TRIMMOMATIC/trimmomatic-0.36.jar PE -phred33 \
 ${FASTQ_DIR}/${read1}_R1.fastq.gz \
 ${FASTQ_DIR}/${read1}_R2.fastq.gz \
