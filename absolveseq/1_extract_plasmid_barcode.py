@@ -23,13 +23,8 @@ import pandas as pd
 import argsparse
 
 
-# expected oligo barcode - OT correspondences
-OLIGO_POOL = pd.read_excel("/n/data1/bch/hemonc/bauer/archana/NovaSeq3/usftp21.novogene.com/trimmed_fastq_vpooled/LVOT_oligo_pool.xlsx", engine = "openpyxl")
-OLIGO_POOL = OLIGO_POOL.set_index("Barcode")["OT"].to_dict()
 
-
-out_dir = "umi_in_header/"
-def put_umi_in_header(r1):
+def put_umi_in_header(r1, constant_seq="CCAACCTCATAGAACA"):
     # may need to modify such that "ot" matches OT names in LVOT_OLIGO_POOL.xlsx
     sample = r1.split("_")[1]
     ot = sample[21:]
@@ -60,7 +55,7 @@ def put_umi_in_header(r1):
             total_read_count += 1
 
             # get start of constant sequence
-            umi_end = r1_seq.find("CCAACCTCATAGAACA")
+            umi_end = r1_seq.find(constant_seq)
 
             # if valid barcode and correct UMI length
             if (oligo_barcode in OLIGO_POOL) and (umi_end == 16):
@@ -126,44 +121,46 @@ def write_lines(file, header, seq, thirdline, qual):
     file.write(qual + os.linesep)
 
 
-def main():
-    pool = mp.Pool(mp.cpu_count())
+parser = argsparse.ArgumentParser(description="Extract plasmid barcodes and move UMIs to read headers.")
+parser.add_argument('--fastq_dir', type=str, default='.', help='Directory containing input FASTQ files.')
+parser.add_argument('--output_dir', type=str, default='../test/fastq_with_pBC', help='Directory to save output FASTQ files and summaries.')
 
-    # process each sample
-    dict, info, UMIs_per_OT = zip(*pool.map(put_umi_in_header, glob.glob("*_R1_*")))
+out_dir = parser.parse_args().output_dir
+# expected oligo barcode - OT correspondences
+OLIGO_POOL = pd.read_excel("../test/data/target_info/LVOT_oligo_pool.xlsxLVOT_oligo_pool.xlsx", engine = "openpyxl")
+OLIGO_POOL = OLIGO_POOL.set_index("Barcode")["OT"].to_dict()
 
-    pool.close()
-    pool.join()
+pool = mp.Pool(10)
+fastq_dir = parser.parse_args().fastq_dir
+fastq_files = glob.glob(os.path.join(fastq_dir, "*_R1_*"))
 
-    umi_df = pd.DataFrame()
-    per_ot_df = pd.DataFrame.from_dict(OLIGO_POOL, orient='index')
-    per_ot_df.reset_index(drop=True)
+# process each sample
+dict, info, UMIs_per_OT = zip(*pool.map(put_umi_in_header, fastq_files))
 
-    # for each sample
-    for i in range(len(info)):
-        sample = info[i][0]
+pool.close()
+pool.join()
 
-        # transform dict into df
-        df = pd.DataFrame(dict[i], index=[0]).T
+umi_df = pd.DataFrame()
+per_ot_df = pd.DataFrame.from_dict(OLIGO_POOL, orient='index')
+per_ot_df.reset_index(drop=True)
+os.makedirs(out_dir + "/umis/", exist_ok=True)
+# for each sample
+for i in range(len(info)):
+    sample = info[i][0]
 
-        # save file with detailed UMI info
-        df = df.sort_values(by=0, ascending=False)
-        df.index.rename("UMI", inplace=True)
-        df.columns = ["Reads"]
-        df.to_csv("umi_in_header/umis/" + sample + ".csv")
+    # transform dict into df
+    df = pd.DataFrame(dict[i], index=[0]).T
 
-        # add per OT UMI countsa
-        per_ot_df[sample] = UMIs_per_OT[i]
+    # save file with detailed UMI info
+    df = df.sort_values(by=0, ascending=False)
+    df.index.rename("UMI", inplace=True)
+    df.columns = ["Reads"]
+    df.to_csv(out_dir + "/umis/" + sample + ".csv")
+    # add per OT UMI countsa
+    per_ot_df[sample] = UMIs_per_OT[i]
 
-
-    # write read & UMI counts summaries to file
-    summary_df = pd.DataFrame(info, columns=["Sample","Total reads", "Reads with oligo barcode", "Corresponding UMIs"])
-    with pd.ExcelWriter(out_dir + "/LVOT_reads_UMIs.xlsx") as writer:
-        summary_df.to_excel(writer, sheet_name="Per_sample_summary", index=False)
-        per_ot_df.to_excel(writer, sheet_name="Per_OT_summary", index=False)
-
-
-if __name__ == '__main__':
-    main()
-
-
+# write read & UMI counts summaries to file
+summary_df = pd.DataFrame(info, columns=["Sample","Total reads", "Reads with oligo barcode", "Corresponding UMIs"])
+with pd.ExcelWriter(out_dir + "/LVOT_reads_UMIs.xlsx") as writer:
+    summary_df.to_excel(writer, sheet_name="Per_sample_summary", index=False)
+    per_ot_df.to_excel(writer, sheet_name="Per_OT_summary", index=False)
