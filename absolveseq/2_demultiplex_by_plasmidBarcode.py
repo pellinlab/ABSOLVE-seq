@@ -96,23 +96,20 @@ def split_fastq_based_on_UMI_v2(r1_fn, fa_out_folder='./singleUMI_fastq', crispr
                     " --n_processes " +str(n_processes)+ " --ignore_substitutions --min_frequency_alleles_around_cut_to_plot 0 --skip_failed --write_detailed_allele_table --plot_window_size 10"
     return cmd
 
-
-# add args
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='Split FASTQ files based on UMI in header and prepare CRISPResso input.')
-    parser.add_argument('--fastq_dir', type=str, required=True, help='Directory containing FASTQ files with UMIs in the header.')
-    parser.add_argument('--fa_out_folder', type=str, default='./singleUMI_fastq', help='Output folder for single UMI FASTQ files.')
-    parser.add_argument('--crispress_input_folder', type=str, default='./singleUMI_crispresso_input', help='Output folder for CRISPResso input files.')
-    parser.add_argument('--n_processes', type=int, default=10, help='Number of processes to use for CRISPRessoBatch.')
-    args = parser.parse_args()
-    r1_fn_list = glob.glob(os.path.join(args.fastq_dir, '*_R1.fastq.gz'))
-    print('Total samples:', len(r1_fn_list))    
-    cmd_list = []
-    for r1_fn in tqdm(r1_fn_list):
-        cmd = split_fastq_based_on_UMI_v2(r1_fn, fa_out_folder=args.fa_out_folder, crispress_input_folder=args.crispress_input_folder, n_processes=args.n_processes)
-        cmd_list.append(cmd)
-    with open('./CRISPRessoBatch_command.sh', 'w') as f:
-        for cmd in cmd_list:
-            f.write(cmd + '\n')
-    print('CRISPRessoBatch commands saved to CRISPRessoBatch_command.sh')
+import argparse
+parser = argparse.ArgumentParser(description='Split FASTQ files based on UMI in header and prepare CRISPResso input.')
+parser.add_argument('--fastq_dir', type=str, required=True, help='Directory containing FASTQ files with UMIs in the header.')
+parser.add_argument('--fa_out_folder', type=str, default='./singleUMI_fastq', help='Output folder for single UMI FASTQ files.')
+parser.add_argument('--crispress_input_folder', type=str, default='./singleUMI_crispresso_input', help='Output folder for CRISPResso input files.')
+parser.add_argument('--n_processes', type=int, default=10, help='Number of processes to use for CRISPRessoBatch.')
+args = parser.parse_args()
+r1_fn_list = glob.glob(os.path.join(args.fastq_dir, '*_R1.fastq.gz'))
+print('Total samples:', len(r1_fn_list))    
+cmd_list = []
+for r1_fn in tqdm(r1_fn_list):
+    cmd = split_fastq_based_on_UMI_v2(r1_fn, fa_out_folder=args.fa_out_folder, crispress_input_folder=args.crispress_input_folder, n_processes=args.n_processes)
+    cmd_list.append(cmd)
+with open('./CRISPRessoBatch_command.sh', 'w') as f:
+    for cmd in cmd_list:
+        f.write(cmd + '\n')
+print('CRISPRessoBatch commands saved to CRISPRessoBatch_command.sh')
