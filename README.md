@@ -22,7 +22,7 @@ The package implements a two-stage pipeline comprising read preprocessing and of
 
 ## Features<a name="features"></a>
 
-The package implements a pipeline consisting of a read preprocessing module followed by an off-target identification module. The preprocessing module takes raw reads (FASTQ) from a pooled multi-sample sequencing run as input. Reads are demultiplexed into sample-specific FASTQs and plasmid barcode are moved to Header line.
+This package provides a pipeline for ABSOLVE-seq read preprocessing and off-target identification. The preprocessing module demultiplexes raw pooled FASTQ inputs into target-plasmid-barcode-specific read files.
 
 The individual pipeline steps are:
 
