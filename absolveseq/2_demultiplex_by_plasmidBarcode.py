@@ -157,11 +157,11 @@ def main():
         ):
             cmd_list.append(cmd)
 
-    with open('./CRISPRessoBatch_command.sh', 'w') as f:
+    with open('./CRISPRessoBatch_absolveseq.sh', 'w') as f:
         for cmd in cmd_list:
             f.write(cmd + '\n')
 
-    print('CRISPRessoBatch commands saved to CRISPRessoBatch_command.sh')
+    print('CRISPRessoBatch commands saved to CRISPRessoBatch_absolveseq.sh')
 
 if __name__ == "__main__":
     main()
