@@ -9,6 +9,7 @@ import multiprocessing
 import json
 import ast
 from collections import Counter
+import argparse
 
 def read_lines(file):
     header = file.readline().rstrip()
@@ -39,7 +40,7 @@ def get_umis(r1):
                 break
     return umi_list
 
-def split_fastq_based_on_UMI_v2(r1_fn, fa_out_folder='./singleUMI_fastq', crispress_input_folder = './singleUMI_crispresso_input', n_processes = 10):
+def split_fastq_based_on_UMI_v2(r1_fn, amplicon_fn ='./test/data/target_info/OT_guide_amplicon_seq.csv', fa_out_folder='./singleUMI_fastq', crispress_input_folder = './singleUMI_crispresso_input', n_processes = 10):
     # if not os.path.exists(fa_out_folder):
     #     os.mkdir(fa_out_folder)
     # fa_out_folder='./singleUMI_fastq'
@@ -56,7 +57,8 @@ def split_fastq_based_on_UMI_v2(r1_fn, fa_out_folder='./singleUMI_fastq', crispr
     tdf = tdf.reset_index()
     tdf['line_0'] = tdf['line_0'].astype(str) 
     tdf = tdf.groupby('index')['line_0'].agg(','.join).reset_index()
-    amplicon_df = pd.read_csv('./metadata/OT_guide_amplicon_seq.csv', index_col=['OT-Name'])
+    
+    amplicon_df = pd.read_csv(amplicon_fn, index_col=['OT-Name'])
     amplicon_seq = amplicon_df.loc[OT_name, 'amplicon_seq']
     guide_seq = amplicon_df.loc[OT_name, 'guide_seq']
     cmd = ''
@@ -96,20 +98,70 @@ def split_fastq_based_on_UMI_v2(r1_fn, fa_out_folder='./singleUMI_fastq', crispr
                     " --n_processes " +str(n_processes)+ " --ignore_substitutions --min_frequency_alleles_around_cut_to_plot 0 --skip_failed --write_detailed_allele_table --plot_window_size 10"
     return cmd
 
-import argparse
-parser = argparse.ArgumentParser(description='Split FASTQ files based on UMI in header and prepare CRISPResso input.')
-parser.add_argument('--fastq_dir', type=str, required=True, help='Directory containing FASTQ files with UMIs in the header.')
-parser.add_argument('--fa_out_folder', type=str, default='./singleUMI_fastq', help='Output folder for single UMI FASTQ files.')
-parser.add_argument('--crispress_input_folder', type=str, default='./singleUMI_crispresso_input', help='Output folder for CRISPResso input files.')
-parser.add_argument('--n_processes', type=int, default=10, help='Number of processes to use for CRISPRessoBatch.')
-args = parser.parse_args()
-r1_fn_list = glob.glob(os.path.join(args.fastq_dir, '*_R1.fastq.gz'))
-print('Total samples:', len(r1_fn_list))    
-cmd_list = []
-for r1_fn in tqdm(r1_fn_list):
-    cmd = split_fastq_based_on_UMI_v2(r1_fn, fa_out_folder=args.fa_out_folder, crispress_input_folder=args.crispress_input_folder, n_processes=args.n_processes)
-    cmd_list.append(cmd)
-with open('./CRISPRessoBatch_command.sh', 'w') as f:
-    for cmd in cmd_list:
-        f.write(cmd + '\n')
-print('CRISPRessoBatch commands saved to CRISPRessoBatch_command.sh')
+def main():
+    parser = argparse.ArgumentParser(
+        description='Split FASTQ files based on UMI in header and prepare CRISPResso input.'
+    )
+    parser.add_argument(
+        '--fastq_dir',
+        type=str,
+        required=True,
+        help='Directory containing FASTQ files with UMIs in the header.'
+    )
+    parser.add_argument(
+        '--fa_out_folder',
+        type=str,
+        default='./test/demultiplexed_pBC_fastq',
+        help='Output folder for single UMI FASTQ files.'
+    )
+    parser.add_argument(
+        '--crispress_input_folder',
+        type=str,
+        default='./test/CRISPResso_input_files',
+        help='Output folder for CRISPResso input files.'
+    )
+    parser.add_argument(
+        '--amplicon_fn',
+        type=str,
+        default='./test/data/target_info/OT_guide_amplicon_seq.csv',
+        help='CSV file containing amplicon and guide sequences.'
+    )
+    parser.add_argument(
+        '--n_processes',
+        type=int,
+        default=10,
+        help='Number of worker processes to use in parallel.'
+    )
+    
+    args = parser.parse_args()
+
+    r1_fn_list = glob.glob(os.path.join(args.fastq_dir, '*_R1.fastq.gz'))
+    print('Total samples:', len(r1_fn_list))
+
+    cmd_list = []
+
+    # parallel over r1_fn_list
+    pool_args = [
+        (r1_fn, args.amplicon_fn, args.fa_out_folder, args.crispress_input_folder, args.n_processes)
+        for r1_fn in r1_fn_list
+    ]
+
+    # use multiprocessing.Pool for parallelism
+    with multiprocessing.Pool(processes=args.n_processes) as pool:
+        for cmd in tqdm(
+            pool.starmap(split_fastq_based_on_UMI_v2, pool_args),
+            total=len(pool_args),
+            desc="Processing samples",
+            unit="sample",
+            dynamic_ncols=True
+        ):
+            cmd_list.append(cmd)
+
+    with open('./CRISPRessoBatch_command.sh', 'w') as f:
+        for cmd in cmd_list:
+            f.write(cmd + '\n')
+
+    print('CRISPRessoBatch commands saved to CRISPRessoBatch_command.sh')
+
+if __name__ == "__main__":
+    main()

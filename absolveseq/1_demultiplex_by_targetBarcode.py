@@ -5,6 +5,7 @@ import numpy as np
 import os
 from tqdm import tqdm
 import argparse
+import multiprocessing as mp  # <-- add this
 # import seaborn as sns
 
 def read_lines(file):
@@ -27,7 +28,6 @@ def put_umi_in_header(r1_info, files_UMIs, OLIGO_INFO, n_thr=5):
     total_read_count = 0
     filtered_read_count = 0 # reads that contain oligo barcode
     dict = {} # UMI counts
-    # OLIGO_INFO = pd.read_excel("./script/LVOT_oligo_pool.xlsx", engine = "openpyxl")
     OLIGO_POOL = OLIGO_INFO.set_index("Barcode")["OT"].to_dict()
     r1 = r1_info['Fastq_path']
     with gzip.open(r1, 'rt') as r1_fastq,\
@@ -37,7 +37,6 @@ def put_umi_in_header(r1_info, files_UMIs, OLIGO_INFO, n_thr=5):
         cas_type = r1_info['cas_type']
         # sample = os.path.basename(r1)
         sample = '_'.join([cas_type, donor, rep])
-        # 
         while True:
             r1_header, r1_seq, r1_thirdline, r1_qual = read_lines(r1_fastq)
             r2_header, r2_seq, r2_thirdline, r2_qual = read_lines(r2_fastq)
@@ -92,58 +91,104 @@ def put_umi_in_header(r1_info, files_UMIs, OLIGO_INFO, n_thr=5):
     # close files and count UMIs per OT
     UMIs_per_OT = [] # for sample
     for ot in files_UMIs:
-        # files_UMIs[ot][0].close() 
-        # files_UMIs[ot][1].close()
         UMIs_per_OT.append(len(files_UMIs[ot][2]))
 
     # return saved info for sample
     info = [sample, total_read_count, filtered_read_count, len(dict)]
-    print(info)
     return dict, info, UMIs_per_OT
+
+def _process_one_row(args):
+    """
+    Worker wrapper so it can be pickled by multiprocessing.
+    Builds files_UMIs and calls put_umi_in_header for one sample row.
+    """
+    row_dict, out_dir, oligo_info_dict = args
+    row = pd.Series(row_dict)
+    OLIGO_INFO = pd.DataFrame(oligo_info_dict)  # reconstruct DataFrame in worker
+    OLIGO_POOL = OLIGO_INFO.set_index("Barcode")["OT"].to_dict()
+
+    donor = row['donor_id']
+    rep = row['replicate']
+    cas_type = row['cas_type']
+    sample = '_'.join([cas_type, donor, rep])
+
+    files_UMIs = {}
+    for ot in OLIGO_POOL.values():
+        ot_r1 = os.path.join(out_dir, f"{sample}_{ot}_R1.fastq.gz")
+        ot_r2 = os.path.join(out_dir, f"{sample}_{ot}_R2.fastq.gz")
+        files_UMIs[f"{sample}_{ot}"] = [ot_r1, ot_r2, {}]
+        # touch files so write_lines() can open in 'at'
+        with gzip.open(ot_r1, 'wt'):
+            pass
+        with gzip.open(ot_r2, 'wt'):
+            pass
+
+    return put_umi_in_header(row, files_UMIs, OLIGO_INFO)
 
 def main():
     parser = argparse.ArgumentParser(description="Extract plasmid barcodes and move UMIs to read headers.")
-    parser.add_argument('--output_dir', type=str, default='./test/demultiplexed_tBC', help='Directory to save output FASTQ files and summaries.')
-    parser.add_argument('--target_info', type=str, default='./test/data/target_info_example/LVOT_oligo_pool.xlsx', help='Excel file containing oligo pool information.')
-    parser.add_argument('--sample_info', type=str, default='./test/data/target_info_example/NovaSeq3_sample_info_example.csv', help='csv file containing oligo pool information.')
-    
+    parser.add_argument(
+        '--output_dir',
+        type=str,
+        default='./test/demultiplexed_tBC_fastq',
+        help='Directory to save output FASTQ files and summaries.'
+    )
+    parser.add_argument(
+        '--target_info',
+        type=str,
+        default='./test/data/target_info/LVOT_oligo_pool.xlsx',
+        help='Excel file containing oligo pool information.'
+    )
+    parser.add_argument(
+        '--sample_info',
+        type=str,
+        default='./test/data/target_info/NovaSeq3_sample_info_example.csv',
+        help='csv file containing oligo pool information.'
+    )
+    parser.add_argument(
+        '--n_cpu',
+        type=int,
+        default=4,
+        help='Number of worker processes.'
+    )
+
     args = parser.parse_args()
     out_dir = args.output_dir
     target_info = args.target_info
     sample_info = args.sample_info
+    n_cpu = args.n_cpu
+
     os.makedirs(out_dir, exist_ok=True)
     OLIGO_INFO = pd.read_excel(target_info, engine = "openpyxl")
     OLIGO_POOL = OLIGO_INFO.set_index("Barcode")["OT"].to_dict()
 
     sample_df = pd.read_csv(sample_info)
-    r1_fns = list(sample_df['Fastq_path'])
 
-    files_UMIs = {}
-    for idx, row in sample_df.iterrows():
-        for ot in OLIGO_POOL.values():
-            donor = row['donor_id']
-            rep = row['replicate']
-            cas_type = row['cas_type']
-            sample = '_'.join([cas_type, donor, rep])
-            ot_r1 = out_dir + "/" + sample + "_" + ot + "_R1.fastq.gz"
-            ot_r2 = out_dir + "/" + sample + "_" + ot + "_R2.fastq.gz"
-            files_UMIs[sample + "_" + ot] = [ot_r1, ot_r2, {}]
-            with gzip.open(ot_r1, 'wt') as f:
-                pass
-            with gzip.open(ot_r2, 'wt') as f:
-                pass
-    
+    # prepare arguments for workers
+    oligo_info_dict = OLIGO_INFO.to_dict(orient="list")
+    worker_args = [
+        (row.to_dict(), out_dir, oligo_info_dict)
+        for _, row in sample_df.iterrows()
+    ]
+
+    # parallel per-sample processing
+    with mp.Pool(processes=n_cpu) as pool:
+        results = list(
+            tqdm(pool.imap_unordered(_process_one_row, worker_args),
+                 total=len(worker_args))
+        )
+
     dict_list = []
     info_list = []
     UMIs_per_OT_list = []
-    for idx, row in tqdm(sample_df.iterrows(), total=sample_df.shape[0]):
-        dict, info, UMIs_per_OT = put_umi_in_header(row, files_UMIs, OLIGO_INFO)
-        dict_list.append(dict)
+    for d, info, umis in results:
+        dict_list.append(d)
         info_list.append(info)
-        UMIs_per_OT_list.append(UMIs_per_OT)
+        UMIs_per_OT_list.append(umis)
 
     per_ot_df = pd.DataFrame.from_dict(OLIGO_POOL, orient='index')
-    per_ot_df.reset_index(drop=True)
+    per_ot_df.reset_index(drop=True, inplace=True)
+
     # for each sample
     for i in range(len(info_list)):
         sample = info_list[i][0]
@@ -152,19 +197,21 @@ def main():
 
         # save file with detailed UMI info
         df = df.sort_values(by=0, ascending=False)
-        df.index.rename("UMI", inplace=True)
+        df.index.rename("plasmid_barcode", inplace=True)
         df.columns = ["Reads"]
-        os.makedirs(out_dir + "/pBCs", exist_ok=True)
-        df.to_csv(out_dir + "/pBCs/" + sample + ".csv")
-
-        # add per OT UMI countsa·
+        os.makedirs(os.path.join(out_dir, "pBCs_stats"), exist_ok=True)
+        df.to_csv(os.path.join(out_dir, "pBCs_stats", f"{sample}.csv"))
+        # add per OT UMI counts
         per_ot_df[sample] = UMIs_per_OT_list[i]
-        # write read & UMI counts summaries to file
-    summary_df = pd.DataFrame(info_list, columns=["Sample","Total reads", "Reads with oligo barcode", "Corresponding UMIs"])
-    with pd.ExcelWriter(out_dir + "/LVOT_reads_UMIs.xlsx") as writer:
+
+    # write read & UMI counts summaries to file
+    summary_df = pd.DataFrame(
+        info_list,
+        columns=["Sample","Total reads", "Reads with plasmid barcode", "#plasmid barcodes"]
+    )
+    with pd.ExcelWriter(os.path.join(out_dir, "absovleseq_reads_pBCs.xlsx")) as writer:
         summary_df.to_excel(writer, sheet_name="Per_sample_summary", index=False)
         per_ot_df.to_excel(writer, sheet_name="Per_OT_summary", index=False)
-
 
 if __name__ == "__main__":
     main()
