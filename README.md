@@ -30,7 +30,7 @@ The individual pipeline steps are:
 2. **Plasmid Barcode Demultiplexing**: Stratification of target-specific reads by unique plasmid barcodes.
 3. **Plasmid Barcode Classification**: Identification and stratification of high-quality barcodes within the Maxi pool.
 4. **CRISPResso2 Analysis**: Quantification of editing outcomes using the CRISPResso2 pipeline.
-5. **Deduplication & Recombination Filtering**: Removal of PCR duplicates and recombination artifacts.
+5. **Dedud & Recombination Filtering**: Removal of reads with dud plasmid barcode and recombination artifacts.
 6. **Indel Estimation & Power Analysis**: Statistical assessment of insertion/deletion frequencies and experimental power.
 7. **Visualization & Reporting**: Generation of summary plots and comprehensive data reports.
 
