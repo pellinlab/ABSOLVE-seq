@@ -146,7 +146,7 @@ def main():
         help='csv file containing oligo pool information.'
     )
     parser.add_argument(
-        '--n_cpu',
+        '--n_processes',
         type=int,
         default=4,
         help='Number of worker processes.'
@@ -156,7 +156,7 @@ def main():
     out_dir = args.output_dir
     target_info = args.target_info
     sample_info = args.sample_info
-    n_cpu = args.n_cpu
+    n_cpu = args.n_processes
 
     os.makedirs(out_dir, exist_ok=True)
     OLIGO_INFO = pd.read_excel(target_info, engine = "openpyxl")

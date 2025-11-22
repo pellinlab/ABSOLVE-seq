@@ -40,9 +40,9 @@ The individual pipeline steps are:
 ```bash
 python absolveseq/1_demultiplex_by_targetBarcode.py \
   --output_dir ./test/demultiplexed_tBC_fastq \
-  --target_info ./test/data/target_info_example/LVOT_oligo_pool.xlsx \
-  --sample_info ./test/data/target_info_example/NovaSeq3_sample_info_example.csv \
-  --n_cpu 8
+  --target_info ./test/data/target_info/LVOT_oligo_pool.xlsx \
+  --sample_info ./test/data/target_info/NovaSeq3_sample_info_example.csv \
+  --n_processes 8
 ```
 
 ```bash
