@@ -36,3 +36,22 @@ The individual pipeline steps are:
 
 
 ## Running Analysis Steps Individually<a name="individual_steps"></a>
+
+```bash
+python absolveseq/1_demultiplex_by_targetBarcode.py \
+  --output_dir ./test/demultiplexed_tBC_fastq \
+  --target_info ./test/data/target_info_example/LVOT_oligo_pool.xlsx \
+  --sample_info ./test/data/target_info_example/NovaSeq3_sample_info_example.csv \
+  --n_cpu 8
+```
+
+```bash
+python absolveseq/2_demultiplex_by_plasmidBarcode.py \
+  --fastq_dir ./test/demultiplexed_tBC_fastq \
+  --fa_out_folder ./demultiplexed_pBC_fastq \
+  --crispress_input_folder ./test/CRISPResso_input_files \
+  --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
+  --n_processes 8
+```
+
+
