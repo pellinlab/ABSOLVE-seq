@@ -26,14 +26,12 @@ The package implements a pipeline consisting of a read preprocessing module foll
 
 The individual pipeline steps are:
 
-1. **Sample demultiplexing and plasmid barcode extraction**: A pooled multi-sample sequencing run is demultiplexed into sample-specific read files based on sample-specific
-2. **Aggragate reads with plasmid barcode**:
-3. **CRISPResso2 analyais**:
+1. **Sample demultiplexing on target barcode**: A pooled multi-sample sequencing run is demultiplexed into sample-specific read files based on sample-specific
+2. **Sample demultiplexing on plasmid barcode**:
+3. **Editing analysis with CRISPResso2**:
 4. **Dedud and recombination filtering**: 
 5. **Indel estimation and power analysis**:
-6. **Reporting**:
-7. **Visualization**:
-
+6. **Visualization and report**:
 
 ## Running Analysis Steps Individually<a name="individual_steps"></a>
 
