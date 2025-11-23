@@ -41,7 +41,7 @@ The individual pipeline steps are:
 ```bash
 conda isntall absolveseq_env python=3.9 tqdm
 conda activate absolveseq_env
-conda install crispresso2
+conda install -c bioconda crispresso2
 ```
 
 ### Demultiplex fastq by target barcode 
@@ -69,7 +69,6 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
 ```bash
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
-### Process CRISPResso2 generated allele tables
 
 
 
