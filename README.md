@@ -39,12 +39,12 @@ The individual pipeline steps are:
 
 ### Installation
 ```bash
+git clone https://github.com/pellinlab/ABSOLVE-seq.git
+cd ABSOLVE-seq
+
 conda isntall absolveseq_env python=3.9 tqdm
 conda activate absolveseq_env
 conda install -c bioconda crispresso2
-
-git clone https://github.com/pellinlab/ABSOLVE-seq.git
-cd ABSOLVE-seq
 ```
 
 ### Demultiplex fastq by target barcode 
