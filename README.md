@@ -58,6 +58,7 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --fastq_dir ./test/demultiplexed_tBC_fastq \
   --fa_out_folder ./test/demultiplexed_pBC_fastq \
   --crispress_input_folder ./test/CRISPResso_input_files \
+  --crispress_input_folder ./test/CRISPResso_output \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
 ```

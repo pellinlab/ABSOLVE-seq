@@ -40,7 +40,8 @@ def get_umis(r1):
                 break
     return umi_list
 
-def split_fastq_based_on_UMI_v2(r1_fn, amplicon_fn ='./test/data/target_info/OT_guide_amplicon_seq.csv', fa_out_folder='./singleUMI_fastq', crispress_input_folder = './singleUMI_crispresso_input', n_processes = 10):
+def split_fastq_based_on_UMI_v2(r1_fn, amplicon_fn ='./test/data/target_info/OT_guide_amplicon_seq.csv', fa_out_folder='./singleUMI_fastq', 
+                    crispress_input_folder='./singleUMI_crispresso_input', crispresso_output_folder="./CRISPResso_output", n_processes = 10):
     # if not os.path.exists(fa_out_folder):
     #     os.mkdir(fa_out_folder)
     # fa_out_folder='./singleUMI_fastq'
@@ -94,7 +95,7 @@ def split_fastq_based_on_UMI_v2(r1_fn, amplicon_fn ='./test/data/target_info/OT_
         input_fn = crispress_input_folder + '/' + sample_name + '_input.tsv'
         input_df.to_csv(input_fn,  index=False, sep='\t')
         # make crispressoBatch cmd
-        cmd = "CRISPRessoBatch --batch_settings " + input_fn + " --batch_output_folder ./singleUMI_crispresso/CRISPResso_on_" + sample_name + \
+        cmd = "CRISPRessoBatch --batch_settings " + input_fn + " --batch_output_folder " + crispresso_output_folder + "/" + sample_name + \
                     " --n_processes " +str(n_processes)+ " --ignore_substitutions --min_frequency_alleles_around_cut_to_plot 0 --skip_failed --write_detailed_allele_table --plot_window_size 10"
     return cmd
 
@@ -121,6 +122,12 @@ def main():
         help='Output folder for CRISPResso input files.'
     )
     parser.add_argument(
+        '--crispresso_output_folder',
+        type=str,
+        default='./CRISPResso_output',
+        help='Output folder for CRISPResso results.'
+    )
+    parser.add_argument(
         '--amplicon_fn',
         type=str,
         default='./test/data/target_info/OT_guide_amplicon_seq.csv',
@@ -142,7 +149,7 @@ def main():
 
     # parallel over r1_fn_list
     pool_args = [
-        (r1_fn, args.amplicon_fn, args.fa_out_folder, args.crispress_input_folder, args.n_processes)
+        (r1_fn, args.amplicon_fn, args.fa_out_folder, args.crispress_input_folder, args.crispresso_output_folder, args.n_processes)
         for r1_fn in r1_fn_list
     ]
 
