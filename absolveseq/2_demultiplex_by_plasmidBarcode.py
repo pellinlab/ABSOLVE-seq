@@ -116,7 +116,7 @@ def main():
         help='Output folder for single UMI FASTQ files.'
     )
     parser.add_argument(
-        '--crispress_input_folder',
+        '--crispresso_input_folder',
         type=str,
         default='./test/CRISPResso_input_files',
         help='Output folder for CRISPResso input files.'
@@ -149,7 +149,7 @@ def main():
 
     # parallel over r1_fn_list
     pool_args = [
-        (r1_fn, args.amplicon_fn, args.fa_out_folder, args.crispress_input_folder, args.crispresso_output_folder, args.n_processes)
+        (r1_fn, args.amplicon_fn, args.fa_out_folder, args.crispresso_input_folder, args.crispresso_output_folder, args.n_processes)
         for r1_fn in r1_fn_list
     ]
 
