@@ -36,6 +36,14 @@ The individual pipeline steps are:
 
 ## Running Analysis Steps Individually<a name="individual_steps"></a>
 
+### Installation
+```bash
+conda isntall absolveseq_env python=3.11
+conda activate absolveseq_env
+conda install crispresso2
+```
+
+### Demultiplex fastq by target barcode
 ```bash
 python absolveseq/1_demultiplex_by_targetBarcode.py \
   --output_dir ./test/demultiplexed_tBC_fastq \
@@ -44,15 +52,17 @@ python absolveseq/1_demultiplex_by_targetBarcode.py \
   --n_processes 8
 ```
 
+### Demultiplex fastq by target barcode
 ```bash
 python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --fastq_dir ./test/demultiplexed_tBC_fastq \
-  --fa_out_folder ./demultiplexed_pBC_fastq \
+  --fa_out_folder ./test/demultiplexed_pBC_fastq \
   --crispress_input_folder ./test/CRISPResso_input_files \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
 ```
 
+### CRISPResso2 analyais
 ```bash
 bash CRISPRessoBatch_absolveseq.sh
 ```
