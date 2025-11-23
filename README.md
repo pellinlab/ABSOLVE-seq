@@ -17,7 +17,8 @@ This package implements a two-stage pipeline consisting of read preprocessing an
 <img src="./figure/absolveseq.svg" alt="absolveseq_flowchart" width="350">
 
 ## Dependencies<a name="dependencies"></a>
-* Python 3
+* Python 3.9
+* tqdm
 * [`CRISPResso2`](<https://github.com/pinellolab/CRISPResso2>) genome editing outcomes analysis tool
 
 ## Features<a name="features"></a>
@@ -38,7 +39,7 @@ The individual pipeline steps are:
 
 ### Installation
 ```bash
-conda isntall absolveseq_env python=3.11
+conda isntall absolveseq_env python=3.9 tqdm
 conda activate absolveseq_env
 conda install crispresso2
 ```
@@ -58,7 +59,7 @@ python absolveseq/1_demultiplex_by_targetBarcode.py \
 python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --fastq_dir ./test/demultiplexed_tBC_fastq \
   --fa_out_folder ./test/demultiplexed_pBC_fastq \
-  --crispress_input_folder ./test/CRISPResso_input_files \
+  --crispresso_input_folder ./test/CRISPResso_input_files \
   --crispresso_output_folder ./test/CRISPResso_output \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
@@ -66,9 +67,9 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
 
 ### CRISPResso2 analyais
 ```bash
-bash CRISPRessoBatch_absolveseq.sh
+bash 3_CRISPRessoBatch_absolveseq.sh
 ```
-
+### Process CRISPResso2 generated allele tables
 
 
 
