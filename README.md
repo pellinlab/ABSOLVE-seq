@@ -43,7 +43,8 @@ conda activate absolveseq_env
 conda install crispresso2
 ```
 
-### Demultiplex fastq by target barcode
+### Demultiplex fastq by target barcode 
+Downloead test fastq files from the link in test/data/target_fastq/source
 ```bash
 python absolveseq/1_demultiplex_by_targetBarcode.py \
   --output_dir ./test/demultiplexed_tBC_fastq \
@@ -52,7 +53,7 @@ python absolveseq/1_demultiplex_by_targetBarcode.py \
   --n_processes 8
 ```
 
-### Demultiplex fastq by target barcode
+### Demultiplex fastq by plasmid barcode
 ```bash
 python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --fastq_dir ./test/demultiplexed_tBC_fastq \
@@ -67,6 +68,8 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
 ```bash
 bash CRISPRessoBatch_absolveseq.sh
 ```
+
+
 
 
 
