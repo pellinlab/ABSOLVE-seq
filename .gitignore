@@ -2,3 +2,4 @@ test/demultiplexed_tBC_fastq
 test/data/target_fastq/*fastq.gz
 .DS_Store
 test/.DS_Store
+test/CRISPResso_input_files
