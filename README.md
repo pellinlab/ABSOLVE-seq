@@ -12,7 +12,7 @@ bioRxiv 2024.07.24.605019; doi: https://doi.org/10.1101/2024.07.24.605019
 
 ## Features<a name="features"></a>
 
-The package implements a two-stage pipeline comprising read preprocessing and off-target identification. The preprocessing module ingests pooled multi-sample FASTQ reads and demultiplexes them into sample-specific FASTQs for CRISPResso2 analysis.
+This package implements a two-stage pipeline consisting of read preprocessing and off-target identification. The preprocessing module demultiplexes pooled multi-sample FASTQ reads into target-plasmid-specific files for CRISPResso2 analysis and filters reads with dud plasmid barcodes or recombination errors. Off-target events are then identified using generalized linear models (GLMs) for indel estimation and Monte Carlo simulations for power analysis.
 
 <img src="./figure/absolveseq.svg" alt="absolveseq_flowchart" width="350">
 
@@ -52,5 +52,10 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
 ```
+
+```bash
+bash CRISPRessoBatch_absolveseq.sh
+```
+
 
 
