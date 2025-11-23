@@ -95,7 +95,7 @@ def split_fastq_based_on_UMI_v2(r1_fn, amplicon_fn ='./test/data/target_info/OT_
         input_fn = crispress_input_folder + '/' + sample_name + '_input.tsv'
         input_df.to_csv(input_fn,  index=False, sep='\t')
         # make crispressoBatch cmd
-        cmd = "CRISPRessoBatch --batch_settings " + input_fn + " --batch_output_folder " + crispresso_output_folder + "/" + sample_name + \
+        cmd = "CRISPRessoBatch --batch_settings " + input_fn + " --batch_output_folder " + crispresso_output_folder + "/CRISPResso_on_" + sample_name + \
                     " --n_processes " +str(n_processes)+ " --ignore_substitutions --min_frequency_alleles_around_cut_to_plot 0 --skip_failed --write_detailed_allele_table --plot_window_size 10"
     return cmd
 
@@ -172,3 +172,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
