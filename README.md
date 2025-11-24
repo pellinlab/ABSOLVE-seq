@@ -69,7 +69,7 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --n_processes 8
 ```
 
-### CRISPResso2 analyais
+### Editing outcome analyais with CRISPResso2
 ```bash
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
