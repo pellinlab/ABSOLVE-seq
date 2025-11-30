@@ -79,9 +79,9 @@ out_folder = argparser.parse_args().out_folder
 os.makedirs(out_folder, exist_ok=True)
 
 # collect alleles table and clean the /dev/shm outputs
-for ot_fn in glob.glob(crispresso_out_folder + '/*'):
+for ot_fn in tqdm(glob.glob(crispresso_out_folder + '/*')):
     basename = os.path.basename(ot_fn).replace('CRISPResso_on_', '')
-    print(basename)
+    # print(basename)
     combine_allele_table(basename, out_folder = out_folder, crisprsso_res_folder=crispresso_out_folder)
     # print('combine_allele_table finished')
-    break
+    # break
