@@ -71,12 +71,11 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
 
-### Process CRISPResso2 allele tables
+### Process CRISPResso2 allele tables for filtering (dedud)
 ```bash
 python absolveseq/4_process_crispresso_output.py \
   --crispresso_output_folder ./test/CRISPResso_output/ 
-  --out_folder ./test/absolveseq_edits/raw \
-  
+  --out_folder ./test/absolveseq_edits/raw
 ```
 
 
