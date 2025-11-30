@@ -1,11 +1,11 @@
-# absolveseq: The ABSOLVE-Seq Analysis Package
+# ABSOLVE-seq: Assessment By Stand-in Off-target LentiViral Ensemble with sequencing 
 
 
-The absolveseq package implements our data preprocessing and analysis pipeline for ABSOLVE-Seq data.
+The `absolveseq` package implements our data preprocessing and analysis pipeline for ABSOLVE-seq data.
 
 ### References
 
-#### The original paper describing the ABSOLVE-Seq method:
+#### The original paper describing the ABSOLVE-seq method:
 
 Jiecong Lin, My Anh Nguyen, Linda Y. Lin, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello, Danilo Pellin, Daniel E. Bauer
 bioRxiv 2024.07.24.605019; doi: https://doi.org/10.1101/2024.07.24.605019
