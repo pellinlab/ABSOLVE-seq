@@ -58,7 +58,7 @@ python absolveseq/1_demultiplex_by_targetBarcode.py \
   --n_processes 8
 ```
 
-### Demultiplex fastq by plasmid barcode (pBC)
+### Demultiplex fastq by plasmid barcode (pBC) and CRISPResso edits analysis
 ```bash
 python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --fastq_dir ./test/demultiplexed_tBC_fastq \
@@ -67,10 +67,7 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --crispresso_output_folder ./test/CRISPResso_output \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
-```
-
-### Editing outcome analyais with CRISPResso2
-```bash
+  
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
 
