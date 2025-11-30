@@ -1,6 +1,6 @@
 # ABSOLVE-seq: Assessment By Stand-in Off-target LentiViral Ensemble with sequencing 
 
-As CRISPR enters the clinic, it is important to consider the impact of human genetic diversity on editing specificity during therapeutic development. We developed ABSOLVE-seq to enable high-throughput experimental assessment of candidate off-target sequences involving genetic variants, especially when cells carrying the genotypes of interest are not available.
+As CRISPR enters the clinic, it is important to consider the impact of human genetic diversity on editing specificity during therapeutic development. We developed ABSOLVE-seq to enable experimental assessment of candidate off-target sequences involving genetic variants in parallel, especially when cells with the haplotypes of potential concern are not available.
 
 The `absolveseq` package implements our ABSOLVE-seq data preprocessing and analysis pipeline. It enhances the signal-to-noise ratio, applies rigorous statistical inference, and incorporates allelic outcome predictions to minimize false positives, allowing researchers to absolve candidate off-target sequences.
 
