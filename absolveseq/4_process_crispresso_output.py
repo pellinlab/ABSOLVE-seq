@@ -5,7 +5,24 @@ from tqdm import tqdm
 import json
 import argparse
 
-def combine_allele_table(sample_name, crisprsso_res_folder = './test/CRISPResso_output/', out_folder = './absolveseq_edits/alleles_all/', return_df = False):
+def add_cutsite(allele_full_df):
+    # out_name = fn.split('/')[-1]
+    # allele_full_df = pd.read_csv(fn, sep='\t')
+    align_20bp = []
+    ref_20bp = []
+    for idx, row in allele_full_df.iterrows():
+        ref_pos = np.array(ast.literal_eval(row['ref_positions']))
+        cutsite = row['sgRNA_cut_points']
+        cutsite = np.arange(len(row['Reference_Sequence']))[ref_pos == cutsite][0]
+        align_20bp.append(row['Aligned_Sequence'][cutsite-9:cutsite+11])
+        ref_20bp.append(row['Reference_Sequence'][cutsite-9:cutsite+11])
+    allele_full_df['Unedited'] = allele_full_df['Read_Status'] == 'UNMODIFIED'
+    allele_full_df['Aligned_Sequence_20bp'] = align_20bp
+    allele_full_df['Reference_Sequence_20bp'] = ref_20bp
+    allele_full_df.to_csv(fn, sep='\t', index=False)
+    return True
+
+def combine_allele_table(sample_name, crisprsso_res_folder = './test/CRISPResso_output/', out_folder = './absolveseq_edits/alleles_all/'):
     os.makedirs(out_folder, exist_ok=True)
     # lvid = sample_name.split('_')[0].replace('-', '_')
     # LV_cvt = pd.read_csv('./test/data/target_info/NovaSeq3_sample_info.csv').set_index('Fastq_ID')
@@ -32,45 +49,31 @@ def combine_allele_table(sample_name, crisprsso_res_folder = './test/CRISPResso_
     print(alleles_dir)
     alleles_fns = glob.glob(crisprsso_res_folder +'/CRISPResso_on_'+sample_name+'/CRISPRessoBatch_on_'+sample_name+'_input/CRISPResso_on_*/Alleles_frequency_table.zip')
     # print(len(alleles_fns))
-    umi_allele_list = []
     umi_full_allele_list = []
     for fn in alleles_fns:
         umi_seq = fn.split('/')[-2].split('_')[-1]
-        df = pd.read_csv(fn, sep='\t')
         full_df = pd.read_csv(fn, sep='\t')
         json_file = fn.replace(fn.split('/')[-1], 'CRISPResso2_info.json')
         json_data = json.load(open(json_file))
         cutsite = json_data['results']['refs']['Reference'] ['sgRNA_cut_points'][0]
         full_df['UMI'] = umi_seq
         full_df['sgRNA_cut_points'] = cutsite
-        df['UMI'] = umi_seq
-        umi_allele_list.append(df)
         umi_full_allele_list.append(full_df)
-    umi_allele_df = pd.concat(umi_allele_list).reset_index()
     umi_full_allele_df = pd.concat(umi_full_allele_list).reset_index()
-    umi_allele_df = umi_allele_df.rename(columns={'%Reads':'%Reads_UMI'})
     umi_full_allele_df = umi_full_allele_df.rename(columns={'%Reads':'%Reads_UMI'})
-    umi_allele_df['%Reads'] = umi_allele_df['#Reads']/umi_allele_df['#Reads'].sum() * 100
     umi_full_allele_df['%Reads'] = umi_full_allele_df['#Reads']/umi_full_allele_df['#Reads'].sum() * 100
-    umi_allele_df['sample_id'] = sample_name
     umi_full_allele_df['sample_id'] = sample_name
-    umi_allele_df['donor'] = donor_i
     umi_full_allele_df['donor'] = donor_i
-    umi_allele_df['replicate'] = Rep_i
     umi_full_allele_df['replicate'] = Rep_i
-    umi_allele_df['group'] = group_i
     umi_full_allele_df['group'] = group_i
-    umi_allele_df['OT_name'] = ot
     umi_full_allele_df['OT_name'] = ot
-    # umi_allele_df['LV_id'] = lvid.replace('_', '-')
-    # umi_full_allele_df['LV_id'] = lvid.replace('_', '-')
-    # print(out_name)
-    if return_df:
-        return umi_allele_df, umi_full_allele_df
-    else:
-        umi_allele_df.to_csv(out_folder + '/' + out_name + '_Allele_frequency_table_withUMI.txt', index=False, sep='\t')
-        umi_full_allele_df.to_csv(out_folder + '/' + out_name + '_Allele_frequency_table_full_withUMI.txt', index=False, sep='\t')
-        return out_name
+    umi_full_allele_df = add_cutsite(umi_full_allele_df)
+    umi_full_allele_df = umi_full_allele_df[['UMI', 'index', 'Aligned_Sequence',
+               'Reference_Sequence', 'Aligned_Sequence_20bp', 'Reference_Sequence_20bp', 'sgRNA_cut_points', 'Aligned_Reference_Scores', 'Unedited', 'n_deleted', 'n_inserted',
+               'n_mutated', '#Reads', '%Reads_UMI', '%Reads', 'sample_id', 'donor',
+               'replicate', 'group', 'OT_name']]
+    umi_full_allele_df.to_csv(out_folder + '/' + out_name + '_Allele_frequency_table_full_withUMI.txt', index=False, sep='\t')
+    return out_name
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--crispresso_result_dir', type=str, help='CRISPResso results folder path', default='./test/CRISPResso_output/')
