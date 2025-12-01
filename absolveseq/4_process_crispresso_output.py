@@ -24,31 +24,15 @@ def add_cutsite(allele_full_df):
 
 def combine_allele_table(sample_name, crisprsso_res_folder = './test/CRISPResso_output/', out_folder = './absolveseq_edits/alleles_all/'):
     os.makedirs(out_folder, exist_ok=True)
-    # lvid = sample_name.split('_')[0].replace('-', '_')
-    # LV_cvt = pd.read_csv('./test/data/target_info/NovaSeq3_sample_info.csv').set_index('Fastq_ID')
-    # donor_i + '_' + group_i + '_' + Rep_i
-    # LV_cvt['name'] = LV_cvt['donor_id'] + '_' + LV_cvt['cas_type'] + '_' + LV_cvt['replicate']
-    # LV_cvt = LV_cvt.set_index('name')
     ot = sample_name.split('_')[-1]
     group_i = sample_name.split('_')[0]
     donor_i = sample_name.split('_')[1]
     Rep_i = sample_name.split('_')[2]
-    # name = donor_i + '_' + group_i + '_' + Rep_i
-    # lvid = LV_cvt.loc[name, 'LV_ID']
-    # print(lvid, ot)
-    # LV_cvt = pd.read_csv('./metadata/NovaSeq3_sample_info.csv')
-    # Rep_i =  LV_cvt.loc[lvid, 'replicate']
-    # group_i = LV_cvt.loc[lvid, 'cas_type'].replace('Cas9', '').replace('noEP', 'NoEP')
-    # donor_i = LV_cvt.loc[lvid, 'donor_id']
-    # out_name = ot + '_' + lvid.replace('_', '-') + '_'+ donor_i + '_' + group_i + '_' + Rep_i
+
     out_name = ot + '_' + donor_i + '_' + group_i + '_' + Rep_i
-    # if not os.path.exists(out_folder):
-    #     os.mkdir(out_folder)
-    # CRISPResso_on_LV-S1_1450-OT-0000-REF/CRISPRessoBatch_on_LV-S1_1450-OT-0000-REF_input
     alleles_dir = crisprsso_res_folder +'/CRISPResso_on_'+sample_name+'/CRISPRessoBatch_on_'+sample_name+'_input/CRISPResso_on_*/'
-    print(alleles_dir)
+    print(f"Alleles directory: {alleles_dir}")
     alleles_fns = glob.glob(crisprsso_res_folder +'/CRISPResso_on_'+sample_name+'/CRISPRessoBatch_on_'+sample_name+'_input/CRISPResso_on_*/Alleles_frequency_table.zip')
-    # print(len(alleles_fns))
     umi_full_allele_list = []
     for fn in alleles_fns:
         umi_seq = fn.split('/')[-2].split('_')[-1]
@@ -76,8 +60,8 @@ def combine_allele_table(sample_name, crisprsso_res_folder = './test/CRISPResso_
     return out_name
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--crispresso_result_dir', type=str, help='CRISPResso results folder path', default='./test/CRISPResso_output/')
-argparser.add_argument('--out_folder', type=str, help='output folder path', default='./absolveseq_edits/raw')
+argparser.add_argument('--crispresso_result_dir', type=str, help='Path to the CRISPResso results folder', default='./test/CRISPResso_output/')
+argparser.add_argument('--out_folder', type=str, help='Path to the output folder', default='./absolveseq_edits/raw')
 crispresso_out_folder = argparser.parse_args().crispresso_result_dir
 out_folder = argparser.parse_args().out_folder
 os.makedirs(out_folder, exist_ok=True)
@@ -85,7 +69,6 @@ os.makedirs(out_folder, exist_ok=True)
 # collect alleles table and clean the /dev/shm outputs
 for ot_fn in tqdm(glob.glob(crispresso_out_folder + '/*')):
     basename = os.path.basename(ot_fn).replace('CRISPResso_on_', '')
-    # print(basename)
     combine_allele_table(basename, out_folder = out_folder, crisprsso_res_folder=crispresso_out_folder)
     # print('combine_allele_table finished')
     # break
