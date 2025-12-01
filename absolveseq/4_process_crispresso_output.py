@@ -61,7 +61,7 @@ def combine_allele_table(sample_name, crisprsso_res_folder = './test/CRISPResso_
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--crispresso_result_dir', type=str, help='Path to the CRISPResso results folder', default='./test/CRISPResso_output/')
-argparser.add_argument('--out_folder', type=str, help='Path to the output folder', default='./absolveseq_edits/raw')
+argparser.add_argument('--out_folder', type=str, help='Path to the output folder', default='./absolveseq_edits/crispresso_allele_tables/')
 crispresso_out_folder = argparser.parse_args().crispresso_result_dir
 out_folder = argparser.parse_args().out_folder
 os.makedirs(out_folder, exist_ok=True)
