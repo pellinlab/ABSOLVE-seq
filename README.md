@@ -75,7 +75,7 @@ bash 3_CRISPRessoBatch_absolveseq.sh
 ### Process CRISPResso2 allele tables for filtering (dedud)
 ```bash
 python absolveseq/4_process_crispresso_output.py \
-  --crispresso_output_folder ./test/CRISPResso_output/ 
+  --crispresso_result_dir ./test/CRISPResso_output/ 
   --out_folder ./test/absolveseq_edits/crispresso_allele_tables
 ```
 
