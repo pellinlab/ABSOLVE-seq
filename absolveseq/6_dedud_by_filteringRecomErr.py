@@ -58,6 +58,7 @@ args = parser.parse_args()
 oligo_df = pd.read_csv(args.target_oligo_file).set_index('OT')
 dir_path = args.dedud_alleles_dir
 out_folder = args.output_dir
+os.makedirs(out_folder, exist_ok=True)
 # for filter in ['dedud']']:
 for fn in tqdm(glob.glob(dir_path + '/*.annot.txt.gz')):
     out_name = fn.split('/')[-1]
@@ -118,7 +119,7 @@ for fn in tqdm(glob.glob(dir_path + '/*.annot.txt.gz')):
     allele_df.to_csv(out_fn, sep='\t', index=False, compression='gzip')
 
 parent_dir = os.path.dirname(os.path.dirname(out_folder))
-for fn in tqdm(glob.glob(dir_path + '/*.annot.txt.gz')):
+for fn in tqdm(glob.glob(out_folder + '/*.annot.txt.gz')):
     out_name = fn.split('/')[-1]
     allele_df = pd.read_csv(fn, sep='\t')
     allele_df = allele_df[(allele_df['OT_name'] == allele_df['best_match'])&(allele_df['#same_match'] == 0)].reset_index(drop=True)
