@@ -8,7 +8,7 @@ The `absolveseq` package implements our ABSOLVE-seq data preprocessing and analy
 
 #### The original paper describing the ABSOLVE-seq method:
 
-Jiecong Lin, My Anh Nguyen, Linda Y. Lin, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello, Danilo Pellin, Daniel E. Bauer
+Jiecong Lin^, My Anh Nguyen^, Linda Y. Lin^, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello*, Danilo Pellin*, and Daniel E. Bauer*
 bioRxiv 2024.07.24.605019; doi: https://doi.org/10.1101/2024.07.24.605019
 
 ## Features<a name="features"></a>
