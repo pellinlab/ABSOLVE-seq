@@ -70,7 +70,7 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
 ```
-Analyse ABSOLVE-seq editing outcomes with CRISPRessoBatch
+Analyse ABSOLVE-seq editing outcomes with CRISPResso2 batch mode
 ```bash
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
@@ -96,5 +96,5 @@ python absolveseq/6_dedud_by_filteringRecomErr.py \
   --dedud_alleles_dir ./test/absolveseq_edits/dedud/ \
   --output_dir ./test/absolveseq_edits/dedud_filtered/
 ```
-### Editing estiamtion and power analysis
+### Editing estimation and power analysis
 
