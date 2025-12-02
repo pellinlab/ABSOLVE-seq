@@ -90,5 +90,11 @@ python absolveseq/5_dedud_by_plasmidBarcode.py \
   --output_dir ./test/absolveseq_edits/dedud/
 ```
 dedud ABSOLVE-seq edinting outcomes by filtering out edited reads with recombination error.
+```bash
+python absolveseq/6_dedud_by_filteringRecomErr.py \
+  --target_oligo_file ./test/data/target_info/target_oligos_sequenes.csv \
+  --dedud_alleles_dir ./test/absolveseq_edits/dedud/ \
+  --output_dir ./test/absolveseq_edits/dedud_filtered/
+```
 
 
