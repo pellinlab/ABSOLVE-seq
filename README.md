@@ -76,20 +76,20 @@ bash 3_CRISPRessoBatch_absolveseq.sh
 ```
 
 ### Dedud ABSOLVE-seq editing outcomes via plasmid barcodes
-Process ABSOLVE-seq edinting outcomes per target from CISPResso2 derived allele tables
+Process ABSOLVE-seq outcomes per target from CRISPResso2 derived allele tables
 ```bash
 python absolveseq/4_process_crispresso_output.py \
   --crispresso_result_dir ./test/CRISPResso_output/ \
   --out_folder ./test/absolveseq_edits/crispresso_allele_tables
 ```
-Annotate and dedud ABSOLVE-seq edinting outcomes via plasmid barcodes. The preprocessed plasmid barcodes annotation is at [test/data/plasmid_barcode_category.tsv.gz](test/data/plasmid_barcode_category.tsv.gz).
+Annotate ABSOLVE-seq outcomes and filter dud plasmid barcodes using the preprocessed data in [test/data/plasmid_barcode_category.tsv.gz](test/data/plasmid_barcode_category.tsv.gz).
 ```bash
 python absolveseq/5_dedud_by_plasmidBarcode.py \
   --plasmid_barcode_annot_file ./test/data/plasmid_barcode_category.tsv.gz \
   --crispresso_alleles_dir ./test/absolveseq_edits/crispresso_allele_tables \
   --output_dir ./test/absolveseq_edits/dedud/
 ```
-Dedud ABSOLVE-seq edinting outcomes by filtering out edited reads with recombination error.
+Refine ABSOLVE-seq outcomes by excluding reads with recombination errors.
 ```bash
 python absolveseq/6_dedud_by_filteringRecomErr.py \
   --target_oligo_file ./test/data/target_info/target_oligos_sequenes.csv \
