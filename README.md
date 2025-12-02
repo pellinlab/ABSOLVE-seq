@@ -76,7 +76,7 @@ bash 3_CRISPRessoBatch_absolveseq.sh
 ```
 
 ### Dedud ABSOLVE-seq editing outcomes via plasmid barcodes
-Process ABSOLVE-seq outcomes per target from CRISPResso2 derived allele tables
+Preprocess ABSOLVE-seq outcomes per target from CRISPResso2 derived allele tables
 ```bash
 python absolveseq/4_process_crispresso_output.py \
   --crispresso_result_dir ./test/CRISPResso_output/ \
