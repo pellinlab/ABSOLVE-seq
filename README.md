@@ -75,19 +75,20 @@ Analyse ABSOLVE-seq editing outcomes with CRISPRessoBatch
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
 
-### Annotate ABSOLVE-seq outcomes per target using plasmid pool barcodes
-Process ABSOLVE-seq edinting outcomes per target from CISPResso2
+### Dedud ABSOLVE-seq outcomes per target using plasmid pool barcodes
+Process ABSOLVE-seq edinting outcomes per target from CISPResso2 derived allele tables
 ```bash
 python absolveseq/4_process_crispresso_output.py \
   --crispresso_result_dir ./test/CRISPResso_output/ \
   --out_folder ./test/absolveseq_edits/crispresso_allele_tables
 ```
-Annotate ABSOLVE-seq edinting outcomes by plasmid barcodes. The preproceed plasmid barcodes annotation is at [test/data/plasmid_barcode_category.tsv.gz](test/data/plasmid_barcode_category.tsv.gz).
+Annotate and dedud ABSOLVE-seq edinting outcomes by plasmid barcodes. The preprocessed plasmid barcodes annotation is at [test/data/plasmid_barcode_category.tsv.gz](test/data/plasmid_barcode_category.tsv.gz).
 ```bash
-python absolveseq/5_annotate_editing_outcome.py \
+python absolveseq/5_dedud_by_plasmidBarcode.py \
   --plasmid_barcode_annot_file ./test/data/plasmid_barcode_category.tsv.gz \
-  --crispresso_alleles_dir ./test/absolveseq_edits/crispresso_allele_tables/
-  --output_dir ./test/absolveseq_edits/raw/
+  --crispresso_alleles_dir ./test/absolveseq_edits/crispresso_allele_tables \
+  --output_dir ./test/absolveseq_edits/dedud/
 ```
+dedud ABSOLVE-seq edinting outcomes by filtering out edited reads with recombination error.
 
 
