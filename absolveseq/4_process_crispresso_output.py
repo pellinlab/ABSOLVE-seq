@@ -56,12 +56,12 @@ def combine_allele_table(sample_name, crisprsso_res_folder = './test/CRISPResso_
                'Reference_Sequence', 'Aligned_Sequence_20bp', 'Reference_Sequence_20bp', 'sgRNA_cut_points', 'Aligned_Reference_Scores', 'Unedited', 'n_deleted', 'n_inserted',
                'n_mutated', '#Reads', '%Reads_UMI', '%Reads', 'sample_id', 'donor',
                'replicate', 'group', 'OT_name']]
-    umi_full_allele_df.to_csv(out_folder + '/' + out_name + '_Allele_frequency_table_full_withUMI.txt', index=False, sep='\t')
+    umi_full_allele_df.to_csv(out_folder + '/' + out_name + '_Allele_frequency.txt', index=False, sep='\t')
     return out_name
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--crispresso_result_dir', type=str, help='Path to the CRISPResso results folder', default='./test/CRISPResso_output/')
-argparser.add_argument('--out_folder', type=str, help='Path to the output folder', default='./absolveseq_edits/crispresso_allele_tables/')
+argparser.add_argument('--out_folder', type=str, help='Path to the output folder', default='./test/absolveseq_edits/crispresso_allele_tables/')
 crispresso_out_folder = argparser.parse_args().crispresso_result_dir
 out_folder = argparser.parse_args().out_folder
 os.makedirs(out_folder, exist_ok=True)

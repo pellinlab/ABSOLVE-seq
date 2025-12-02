@@ -59,7 +59,8 @@ python absolveseq/1_demultiplex_by_targetBarcode.py \
   --n_processes 8
 ```
 
-### Demultiplex fastq by plasmid barcode (pBC) and analyse edits with CRISPResso2
+### Demultiplex fastq by plasmid barcode (pBC) and analyse editing outcomes with CRISPResso2
+Demultiplex fastq and preprare input files for CRISPResso2 analysis.
 ```bash
 python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --fastq_dir ./test/demultiplexed_tBC_fastq \
@@ -68,16 +69,25 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --crispresso_output_folder ./test/CRISPResso_output \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
-
+```
+Analyse ABSOLVE-seq editing outcomes with CRISPRessoBatch
+```bash
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
 
-### Process CRISPResso2 allele tables for filtering (dedud)
+### Annotate ABSOLVE-seq outcomes per target using plasmid pool barcodes
+Process ABSOLVE-seq edinting outcomes per target from CISPResso2
 ```bash
 python absolveseq/4_process_crispresso_output.py \
-  --crispresso_result_dir ./test/CRISPResso_output/ 
+  --crispresso_result_dir ./test/CRISPResso_output/ \
   --out_folder ./test/absolveseq_edits/crispresso_allele_tables
 ```
-
+Annotate ABSOLVE-seq edinting outcomes by plasmid barcodes. The preproceed plasmid barcodes annotation is at [test/data/plasmid_barcode_category.tsv.gz](test/data/plasmid_barcode_category.tsv.gz).
+```bash
+python absolveseq/5_annotate_editing_outcome.py \
+  --plasmid_barcode_annot_file ./test/data/plasmid_barcode_category.tsv.gz \
+  --crispresso_alleles_dir ./test/absolveseq_edits/crispresso_allele_tables/
+  --output_dir ./test/absolveseq_edits/raw/
+```
 
 
