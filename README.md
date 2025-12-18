@@ -47,6 +47,10 @@ conda install absolveseq_env python=3.9 tqdm
 conda activate absolveseq_env
 conda install -c bioconda crispresso2
 ```
+### Trim the fastq file
+```bash
+bash 0_trim_fastq.sh
+```
 
 ### Demultiplex fastq by target barcode (tBC)
 Download test fastq files from the link in [test/data/target_fastq/source](test/data/target_fastq/source), and save them in [test/data/target_fastq/](test/data/target_fastq/). [This file](test/data/target_info/NovaSeq3_sample_info_example.csv) contains the FASTQ metadata required for demultiplexing.
