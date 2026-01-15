@@ -101,4 +101,35 @@ python absolveseq/6_dedud_by_filteringRecomErr.py \
   --output_dir ./test/absolveseq_edits/dedud_filtered/
 ```
 ### Editing estimation and power analysis
+Estimate editing outcomes per barcode using the deduplicated filtered ABSOLVE-seq data.
+```bash
+Rscript absolveseq/7_estimation.R \
+  --barcode_file ./test/data/barcodeList.csv \
+  --data_folder ./test/absolveseq_edits/dedud_filtered_v3 \
+  --baselevel_treat NoEP \
+  --number_cores 4
+```
+Perform power analysis based on the estimated editing outcomes.
+```bash
+Rscript absolveseq/8_power_analysis.R \
+  --data_folder ./test/absolveseq_edits/dedud_filtered_v3 \
+  --number_simulations 1000 \
+  --number_cores 4 \
+  --baselevel_treat NoEP
+```
+Plots. 
+```bash
+Rscript absolveseq/9A_plot_heat.R \
+  --data_folder ./test/absolveseq_edits \
+  --experiments dedudS_filtered_v3,dedudS_filtered_v3_dedup,raw,raw_dedup \
+  --format_plot svg
+Rscript absolveseq/9B_plot_bar.R \
+  --data_folder ./test/absolveseq_edits \
+  --experiments dedudS_filtered_v3,dedudS_filtered_v3_dedup,raw,raw_dedup \
+  --format_plot svg
+Rscript absolveseq/9C_plot_dot.R \
+  --data_folder ./test/absolveseq_edits \
+  --experiments dedudS_filtered_v3,dedudS_filtered_v3_dedup,raw,raw_dedup \
+  --format_plot svg
+```
 
