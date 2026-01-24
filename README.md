@@ -131,6 +131,6 @@ Rscript absolveseq/9C_plot_dot.R \
 ```
 
 ## Contacts
-* Danilo Pellin <danilo.pellin@childrens.harvard.edu>
-* Daniel Bauer <daniel.bauer@childrens.harvard.edu>
-* Luca Pinello <lpinello@mgh.harvard.edu>
+* Danilo Pellin (<danilo.pellin@childrens.harvard.edu>)
+* Daniel Bauer (<daniel.bauer@childrens.harvard.edu>)
+* Luca Pinello (<lpinello@mgh.harvard.edu>)
