@@ -1,14 +1,12 @@
-# ABSOLVE-seq: Assessment By Stand-in Off-target LentiViral Ensemble with sequencing 
+# ABSOLVE-seq: Assessment By Stand-in Off-target LentiViral Ensemble with sequencing
 
-As CRISPR enters the clinic, it is important to consider the impact of human genetic diversity on editing specificity during therapeutic development. We developed ABSOLVE-seq to enable experimental assessment of candidate off-target sequences involving genetic variants in parallel, especially when cells with the haplotypes of potential concern are not available.
+As CRISPR enters the clinic, it is important to consider the impact of human genetic variation on editing specificity during therapeutic development. ABSOLVE-seq enables multiplexed experimental assessment of candidate allele-specific off-target sequences in clinically relevant contexts, especially when primary cells with the haplotypes of potential concern are not available.
 
-The `absolveseq` package implements our ABSOLVE-seq data preprocessing and analysis pipeline. It enhances the signal-to-noise ratio, applies rigorous statistical inference, and incorporates allelic outcome predictions to minimize false positives, allowing researchers to absolve candidate off-target sequences.
+The `absolveseq` package implements our ABSOLVE-seq data processing and analysis pipeline. It applies rigorous statistical inference and incorporates allelic outcome predictions to enhance the signal-to-noise ratio and minimize false positives, allowing researchers to exonerate candidate off-target sequences.
 
-### References
+## Citation
 
-#### The original paper describing the ABSOLVE-seq method:
-
-Jiecong Lin^, My Anh Nguyen^, Linda Y. Lin^, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello*, Danilo Pellin*, and Daniel E. Bauer*
+Jiecong Lin*, My Anh Nguyen*, Linda Y. Lin*, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello#, Danilo Pellin#, and Daniel E. Bauer#
 bioRxiv 2024.07.24.605019; doi: https://doi.org/10.1101/2024.07.24.605019
 
 ## Features<a name="features"></a>
@@ -117,7 +115,7 @@ Rscript absolveseq/8_power_analysis.R \
   --number_cores 4 \
   --baselevel_treat NoEP
 ```
-Plots. 
+Plots.
 ```bash
 Rscript absolveseq/9A_plot_heat.R \
   --data_folder ./test/absolveseq_edits \
@@ -133,3 +131,7 @@ Rscript absolveseq/9C_plot_dot.R \
   --format_plot svg
 ```
 
+## Contacts
+* Danilo Pellin <danilo.pellin@childrens.harvard.edu>
+* Daniel Bauer <daniel.bauer@childrens.harvard.edu>
+* Luca Pinello <lpinello@mgh.harvard.edu>
