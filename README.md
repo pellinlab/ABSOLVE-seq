@@ -8,7 +8,7 @@ The `absolveseq` package implements our ABSOLVE-seq data processing and analysis
 
 Jiecong Lin*, My Anh Nguyen*, Linda Y. Lin*, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello#, Danilo Pellin#, and Daniel E. Bauer#. Scalable assessment of genome editing off-targets associated with genetic variants. *bioRxiv* 2024. PMID: 39211178. <https://doi.org/10.1101/2024.07.24.605019>
 
-## Features<a name="features"></a>
+## Overview<a name="overview"></a>
 
 This package implements a two-stage pipeline consisting of read preprocessing and off-target identification. The preprocessing module demultiplexes pooled multi-sample FASTQ reads into target-plasmid-specific files for CRISPResso2 analysis and filters reads with dud plasmid barcodes or recombination errors. Off-target events are then identified using generalized linear models (GLMs) for indel estimation and Monte Carlo simulations for power analysis.
 
@@ -50,7 +50,7 @@ bash 0_trim_fastq.sh
 ```
 
 ### Demultiplex fastq by target barcode (tBC)
-Download test fastq files from the link in [test/data/target_fastq/source](test/data/target_fastq/source), and save them in [test/data/target_fastq/](test/data/target_fastq/). [This file](test/data/target_info/NovaSeq3_sample_info_example.csv) contains the FASTQ metadata required for demultiplexing.
+Download test fastq files from the link in [test/data/target_fastq/source](test/data/target_fastq/source), and save them in [test/data/target_fastq/](test/data/target_fastq/). [This file](test/data/target_info/NovaSeq3_sample_info_example.csv) contains the FASTQ metadata required for demultiplexing:
 
 ```bash
 python absolveseq/1_demultiplex_by_targetBarcode.py \
@@ -61,7 +61,7 @@ python absolveseq/1_demultiplex_by_targetBarcode.py \
 ```
 
 ### Demultiplex fastq by plasmid barcode (pBC) and analyse editing outcomes with CRISPResso2
-Demultiplex fastq and preprare input files for CRISPResso2 analysis.
+Demultiplex fastq and preprare input files for CRISPResso2 analysis:
 ```bash
 python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --fastq_dir ./test/demultiplexed_tBC_fastq \
@@ -71,26 +71,26 @@ python absolveseq/2_demultiplex_by_plasmidBarcode.py \
   --amplicon_fn ./test/data/target_info/OT_guide_amplicon_seq.csv \
   --n_processes 8
 ```
-Analyse ABSOLVE-seq editing outcomes with CRISPResso2 batch mode
+Analyse ABSOLVE-seq editing outcomes with CRISPResso2 batch mode:
 ```bash
 bash 3_CRISPRessoBatch_absolveseq.sh
 ```
 
 ### Dedud ABSOLVE-seq editing outcomes via plasmid barcodes
-Preprocess ABSOLVE-seq outcomes per target from CRISPResso2 derived allele tables
+Preprocess ABSOLVE-seq outcomes per target from CRISPResso2 derived allele tables:
 ```bash
 python absolveseq/4_process_crispresso_output.py \
   --crispresso_result_dir ./test/CRISPResso_output/ \
   --out_folder ./test/absolveseq_edits/crispresso_allele_tables
 ```
-Annotate ABSOLVE-seq outcomes and filter dud plasmid barcodes using the preprocessed data in [test/data/plasmid_barcode_category.tsv.gz](test/data/plasmid_barcode_category.tsv.gz).
+Annotate ABSOLVE-seq outcomes and filter dud plasmid barcodes using the preprocessed data in [test/data/plasmid_barcode_category.tsv.gz](test/data/plasmid_barcode_category.tsv.gz):
 ```bash
 python absolveseq/5_dedud_by_plasmidBarcode.py \
   --plasmid_barcode_annot_file ./test/data/plasmid_barcode_category.tsv.gz \
   --crispresso_alleles_dir ./test/absolveseq_edits/crispresso_allele_tables \
   --output_dir ./test/absolveseq_edits/dedud/
 ```
-Refine ABSOLVE-seq outcomes by excluding reads with recombination errors.
+Refine ABSOLVE-seq outcomes by excluding reads with recombination errors:
 ```bash
 python absolveseq/6_dedud_by_filteringRecomErr.py \
   --target_oligo_file ./test/data/target_info/target_oligos_sequenes.csv \
@@ -98,7 +98,7 @@ python absolveseq/6_dedud_by_filteringRecomErr.py \
   --output_dir ./test/absolveseq_edits/dedud_filtered/
 ```
 ### Editing estimation and power analysis
-Estimate editing outcomes per barcode using the deduplicated filtered ABSOLVE-seq data.
+Estimate editing outcomes per barcode using the deduplicated filtered ABSOLVE-seq data:
 ```bash
 Rscript absolveseq/7_estimation.R \
   --barcode_file ./test/data/barcodeList.csv \
@@ -106,7 +106,7 @@ Rscript absolveseq/7_estimation.R \
   --baselevel_treat NoEP \
   --number_cores 4
 ```
-Perform power analysis based on the estimated editing outcomes.
+Perform power analysis based on the estimated editing outcomes:
 ```bash
 Rscript absolveseq/8_power_analysis.R \
   --data_folder ./test/absolveseq_edits/dedud_filtered_v3 \
@@ -114,7 +114,7 @@ Rscript absolveseq/8_power_analysis.R \
   --number_cores 4 \
   --baselevel_treat NoEP
 ```
-Plots.
+Plots:
 ```bash
 Rscript absolveseq/9A_plot_heat.R \
   --data_folder ./test/absolveseq_edits \
