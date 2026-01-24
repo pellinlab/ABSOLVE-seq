@@ -9,8 +9,9 @@ ABSOLVE-seq is distributed under a dual-license model:
     For-profit institutions or users intending to use ABSOLVE-seq for commercial 
     purposes must acquire a commercial license. For inquiries and licensing 
     details, please contact:
+	- Danilo Pellin: danilo.pellin@childrens.harvard.edu
+	- Daniel Bauer: daniel.bauer@childrens.harvard.edu
         - Luca Pinello: lpinello@mgh.harvard.edu  
-        - Rosalba Giugno: rosalba.giugno@univr.it
 
 For more information on licensing terms and conditions, please reach out to the 
 contacts above.
