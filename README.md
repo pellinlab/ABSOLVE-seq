@@ -6,8 +6,7 @@ The `absolveseq` package implements our ABSOLVE-seq data processing and analysis
 
 ## Citation
 
-Jiecong Lin*, My Anh Nguyen*, Linda Y. Lin*, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello#, Danilo Pellin#, and Daniel E. Bauer#
-bioRxiv 2024.07.24.605019; doi: https://doi.org/10.1101/2024.07.24.605019
+Jiecong Lin*, My Anh Nguyen*, Linda Y. Lin*, Jing Zeng, Archana Verma, Nola R. Neri, Lucas Ferreira da Silva, Adele Mucci, Scot Wolfe, Kit L Shaw, Kendell Clement, Christian Brendel, Luca Pinello#, Danilo Pellin#, and Daniel E. Bauer#. Scalable assessment of genome editing off-targets associated with genetic variants. *bioRxiv* 2024. PMID: 39211178. <https://doi.org/10.1101/2024.07.24.605019>
 
 ## Features<a name="features"></a>
 
