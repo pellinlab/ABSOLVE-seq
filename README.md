@@ -15,7 +15,7 @@ This package implements a two-stage pipeline consisting of read preprocessing an
 <img src="./figure/absolveseq.svg" alt="absolveseq_flowchart" width="350">
 
 ## Dependencies<a name="dependencies"></a>
-* Python 3.9
+* Python >=3.9
 * tqdm
 * [`CRISPResso2`](<https://github.com/pinellolab/CRISPResso2>) genome editing outcomes analysis tool
 
